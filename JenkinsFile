@@ -1,1 +1,42 @@
 // Jenkins File
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the source code from your version control system (e.g., Git)
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the Spring Boot application using Gradle
+                sh './gradlew clean build'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                // Run tests for the Spring Boot application
+                sh './gradlew test'
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean up Docker resources (optional)
+            sh 'docker system prune -f'
+        }
+        
+        success {
+            echo 'Build, test, and deployment completed successfully.'
+        }
+        
+        failure {
+            echo 'Build, test, or deployment failed.'
+        }
+    }
+}
