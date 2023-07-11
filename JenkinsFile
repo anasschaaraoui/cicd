@@ -24,19 +24,4 @@ pipeline {
             }
         }
     }
-    
-    post {
-        always {
-            // Clean up Docker resources (optional)
-            sh 'docker system prune -f'
-        }
-        
-        success {
-            echo 'Build, test, and deployment completed successfully.'
-        }
-        
-        failure {
-            echo 'Build, test, or deployment failed.'
-        }
-    }
 }
