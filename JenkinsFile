@@ -27,8 +27,8 @@ pipeline {
 	stage('Remove Previous Image') {
             steps {
                 // Remove the previous Docker image (if any)
-                sh 'docker stop cicd || true' // Stop the container, if running, and ignore errors if it doesn't exist
-                sh 'docker rm your-container-name || true'   // Remove the container, if it exists, and ignore errors if it doesn't exist
+                sh 'docker stop cicd_container || true' // Stop the container, if running, and ignore errors if it doesn't exist
+                sh 'docker rm cicd_container || true'   // Remove the container, if it exists, and ignore errors if it doesn't exist
                 sh 'docker rmi cicd || true' // Remove the previous image, if it exists, and ignore errors if it doesn't exist
             }
         }
@@ -43,8 +43,23 @@ pipeline {
         stage('Start Container') {
             steps {
                 // Start the new Docker container
-                sh 'docker run -d -p 8080:8081 cicd'
+                sh 'docker run -d --name cicd_container -p 8081:8080 cicd'
             }
+        }
+    }
+
+    post {
+        always {
+            // Clean up Docker resources (optional)
+            sh 'docker system prune -f'
+        }
+        
+        success {
+            echo 'Build, Docker image build, and deployment completed successfully.'
+        }
+        
+        failure {
+            echo 'Build, Docker image build, or deployment failed.'
         }
     }
 }
