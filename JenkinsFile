@@ -23,5 +23,28 @@ pipeline {
                 sh './gradlew test'
             }
         }
+
+	stage('Remove Previous Image') {
+            steps {
+                // Remove the previous Docker image (if any)
+                sh 'docker stop cicd || true' // Stop the container, if running, and ignore errors if it doesn't exist
+                sh 'docker rm your-container-name || true'   // Remove the container, if it exists, and ignore errors if it doesn't exist
+                sh 'docker rmi cicd || true' // Remove the previous image, if it exists, and ignore errors if it doesn't exist
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                // Build the Docker image for your app using the Docker CLI
+                sh 'docker build -t cicd .'
+            }
+        }
+        
+        stage('Start Container') {
+            steps {
+                // Start the new Docker container
+                sh 'docker run -d -p 8080:8081 cicd'
+            }
+        }
     }
 }
