@@ -11,7 +11,7 @@ public class CicdApplication {
 
 	@GetMapping("/getMessage")
 	public String getMessage() {
-		return "Hello world 123... !!";
+		return "This is first real test of cicd... !!";
 	}
 	
 	public static void main(String[] args) {
